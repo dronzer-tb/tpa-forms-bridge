@@ -1,0 +1,29 @@
+# TPA Forms Bridge v2 Configuration
+# This plugin bridges EssentialsX TPA requests to Bedrock forms via GeyserMenu
+
+# Default settings for new players
+defaults:
+  # Auto-accept incoming TPA requests (not TPAHere requests)
+  # When enabled, TPA requests from other players are automatically accepted
+  auto-accept-tpa: false
+  
+  # Enable forms delivery for TPA requests
+  # When enabled, incoming TPA requests show as a form popup
+  # When disabled, only chat messages are shown
+  forms-delivery: true
+
+# Skin provider for player avatars in forms
+# Options: "mc-heads", "crafatar", "minotar"
+# mc-heads.net is recommended for best compatibility
+skin-provider: "mc-heads"
+
+# Debug mode - enables verbose logging
+debug: false
+
+# Messages (supports color codes with & or §)
+messages:
+  tpa-sent: "&aSent teleport request to &b%player%&a."
+  tpa-here-sent: "&aSent teleport here request to &b%player%&a."
+  request-ignored: "&7Teleport request from &b%player%&7 was ignored."
+  settings-updated: "&aTPA Settings updated successfully."
+  no-players-online: "&7There are no other players online."

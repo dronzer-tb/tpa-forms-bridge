@@ -1,0 +1,26 @@
+name: TPAFormsBridge
+version: 2.0.0
+main: com.geysermc.tpaforms.TPAFormsPlugin
+api-version: '1.20'
+description: Spigot-side TPA Forms for Geyser/Bedrock users with GeyserMenu integration.
+author: Kasniya
+website: https://github.com/kasniya/tpa-forms-bridge-v2
+
+# Required dependencies
+depend:
+  - Essentials
+  - floodgate
+  - GeyserMenuCompanion
+
+# Optional dependencies
+softdepend:
+  - SkinsRestorer
+
+permissions:
+  tpaforms.use:
+    description: Allows usage of TPA forms menu
+    default: true
+  tpaforms.admin:
+    description: Admin permission for TPA Forms
+    default: op
+
