@@ -13,12 +13,32 @@
 
 | | Feature | Description |
 |---|---|---|
-|**TPA Button in GeyserMenu** | Adds a TPA button with Ender Eye icon to the main GeyserMenu |
-|**Player List Form** | Shows online players with their skins to send TPA requests |
-|**Auto-Accept TPA** | Optional per-player setting to automatically accept incoming TPA requests |
-|**Forms Delivery Toggle** | Switch between form-based or chat-based TPA request notifications |
-|**SkinsRestorer Support** | Shows player skins even on cracked servers |
-|**Bedrock-Only** | Only shows to Bedrock players via Floodgate detection |
+| 👁️ | **TPA Button in GeyserMenu** | Adds a TPA button with Ender Eye icon to the main GeyserMenu |
+| 👥 | **Player List Form** | Shows online players with their skins to send TPA requests |
+| ⚡ | **Auto-Accept TPA** | Optional per-player setting to automatically accept incoming TPA requests |
+| 💬 | **Forms Delivery Toggle** | Switch between form-based or chat-based TPA request notifications |
+| 🦴 | **SkinsRestorer Support** | Shows player skins even on cracked servers |
+| 📱 | **Bedrock-Only** | Only shows to Bedrock players via Floodgate detection |
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| TPA Menu | TPA Settings |
+|:---:|:---:|
+| <img src="https://github.com/dronzer-tb/tpa-forms-bridge/raw/master/assests/Screenshot%20From%202026-03-15%2021-32-32.png" width="320" /> | <img src="https://github.com/dronzer-tb/tpa-forms-bridge/raw/master/assests/Screenshot%20From%202026-03-15%2021-32-43.png" width="320" /> |
+
+| Teleport Menu | Player Action |
+|:---:|:---:|
+| <img src="https://github.com/dronzer-tb/tpa-forms-bridge/raw/master/assests/Screenshot%20From%202026-03-15%2021-32-59.png" width="320" /> | <img src="https://github.com/dronzer-tb/tpa-forms-bridge/raw/master/assests/Screenshot%20From%202026-03-15%2021-33-07.png" width="320" /> |
+
+| TPA Accept Menu |
+|:---:|
+| <img src="https://github.com/dronzer-tb/tpa-forms-bridge/raw/master/assests/Screenshot%20From%202026-03-15%2021-42-51.png" width="320" /> |
+
+</div>
 
 ---
 
