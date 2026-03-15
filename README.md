@@ -1,83 +1,121 @@
 # TPA Forms Bridge v2
 
-A Spigot plugin that integrates TPA (Teleport Ask) functionality with [GeyserMenu](https://github.com/yourusername/geyser-menu), providing a beautiful form-based TPA experience for Bedrock players.
+> A Spigot plugin that integrates TPA (Teleport Ask) functionality with [GeyserMenu](https://github.com/dronzer-tb/geyser-menu), providing a beautiful form-based TPA experience for Bedrock players.
 
-## Features
+![Version](https://img.shields.io/badge/version-2.0.0--SNAPSHOT-22c55e?style=flat-square)
+![Paper](https://img.shields.io/badge/Paper-1.20.4+-22c55e?style=flat-square)
+![Java](https://img.shields.io/badge/Java-21+-22c55e?style=flat-square)
+![License](https://img.shields.io/badge/License-GPLv3-22c55e?style=flat-square)
 
-- **TPA Button in GeyserMenu**: Adds a TPA button with Ender Eye icon to the main GeyserMenu
-- **Player List Form**: Shows online players with their skins to send TPA requests
-- **Auto-Accept TPA**: Optional setting to automatically accept incoming TPA requests
-- **Forms Delivery**: Toggle between form-based or chat-based TPA request notifications
-- **SkinsRestorer Support**: Shows player skins even on cracked servers
-- **Bedrock-Only**: Only shows to Bedrock players via Floodgate detection
+---
 
-## Requirements
+## ✨ Features
 
-- Paper/Spigot 1.20.4+
-- Java 21+
-- EssentialsX (for TPA functionality)
-- Floodgate (for Bedrock player detection)
-- GeyserMenuCompanion (for menu integration)
-- Optional: SkinsRestorer (for player skin display)
+| | Feature | Description |
+|---|---|---|
+|**TPA Button in GeyserMenu** | Adds a TPA button with Ender Eye icon to the main GeyserMenu |
+|**Player List Form** | Shows online players with their skins to send TPA requests |
+|**Auto-Accept TPA** | Optional per-player setting to automatically accept incoming TPA requests |
+|**Forms Delivery Toggle** | Switch between form-based or chat-based TPA request notifications |
+|**SkinsRestorer Support** | Shows player skins even on cracked servers |
+|**Bedrock-Only** | Only shows to Bedrock players via Floodgate detection |
 
-## Installation
+---
 
-1. Install all required plugins (EssentialsX, Floodgate, GeyserMenuCompanion)
+## 📋 Requirements
+
+| Plugin | Status |
+|---|---|
+| [EssentialsX](https://essentialsx.net/) | Required |
+| [Floodgate](https://geysermc.org/download#floodgate) | Required |
+| [GeyserMenuCompanion](https://github.com/dronzer-tb/geyser-menu-companion) | Required |
+| [SkinsRestorer](https://skinsrestorer.net/) | Optional |
+
+- Paper/Spigot **1.20.4+**
+- Java **21+**
+
+---
+
+## 🚀 Installation
+
+1. Install all required plugins — EssentialsX, Floodgate, GeyserMenuCompanion
 2. Download `TPAFormsBridge-2.0.0-SNAPSHOT.jar`
-3. Place in your `plugins/` folder
-4. Restart your server
+3. Place it in your `plugins/` folder
+4. Restart your server — config generates on first run
 
-## Configuration
+---
 
+## ⚙️ Configuration
 ```yaml
 # config.yml
+
 # Default settings for new players
 defaults:
   auto-accept-tpa: false    # Auto-accept TPA requests (not TPAHere)
-  forms-delivery: true       # Show TPA requests as forms (vs chat)
+  forms-delivery: true      # Show TPA requests as forms (vs chat)
 
 # Messages
 messages:
-  tpa-sent: "&aTPA request sent to %player%"
-  tpa-received: "&e%player% wants to teleport to you"
+  tpa-sent:      "&aTPA request sent to %player%"
+  tpa-received:  "&e%player% wants to teleport to you"
   auto-accepted: "&aTPA request auto-accepted"
 ```
 
-## How It Works
+---
 
-1. Bedrock player double-clicks inventory → GeyserMenu opens
-2. Player clicks "TPA" button → Player list form appears
-3. Player selects a player → TPA request sent via EssentialsX
-4. Target player receives form (if forms-delivery enabled) or chat message
+## 🔄 How It Works
+```
+Bedrock player opens inventory
+        ↓
+  GeyserMenu appears
+        ↓
+  Player clicks TPA
+        ↓
+  Player list form opens
+        ↓
+  Player selects target → TPA sent via EssentialsX
+        ↓
+  Target receives form (forms-delivery) or chat message
+```
 
 ### Player Settings
 
-Each player can configure:
-- **Auto-Accept TPA**: Automatically accept TPA requests (not TPAHere for safety)
-- **Forms Delivery**: Receive TPA requests as forms instead of chat messages
+Each player can individually configure:
 
-## Permissions
+- **Auto-Accept TPA** — automatically accept TPA requests (TPAHere excluded for safety)
+- **Forms Delivery** — receive TPA requests as Bedrock forms instead of chat messages
 
-| Permission | Description |
-|------------|-------------|
-| `tpaforms.use` | Access TPA forms (default: true) |
-| `tpaforms.settings` | Access settings menu (default: true) |
+---
 
-## Building
+## 🔑 Permissions
 
+| Permission | Description | Default |
+|---|---|---|
+| `tpaforms.use` | Access TPA forms | `true` |
+| `tpaforms.settings` | Access settings menu | `true` |
+
+---
+
+## 🔨 Building
 ```bash
 ./gradlew build
 ```
 
 Output: `build/libs/TPAFormsBridge-2.0.0-SNAPSHOT.jar`
 
-## Dependencies
+---
 
-- [GeyserMenu](https://github.com/yourusername/geyser-menu) - The Geyser extension
-- [GeyserMenuCompanion](https://github.com/yourusername/geyser-menu-companion) - Spigot-side API
-- [EssentialsX](https://essentialsx.net/) - TPA functionality
-- [Floodgate](https://geysermc.org/download#floodgate) - Bedrock player detection
+## 📦 Dependencies
 
-## License
+| Dependency | Purpose |
+|---|---|
+| [GeyserMenu](https://github.com/dronzer-tb/geyser-menu) | Geyser extension for form menus |
+| [GeyserMenuCompanion](https://github.com/dronzer-tb/geyser-menu-companion) | Spigot-side API |
+| [EssentialsX](https://essentialsx.net/) | TPA functionality |
+| [Floodgate](https://geysermc.org/download#floodgate) | Bedrock player detection |
 
-MIT License
+---
+
+## 📄 License
+
+Distributed under the **GNU General Public License v3.0**. See [`LICENSE`](./LICENSE) for details.
