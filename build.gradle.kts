@@ -24,10 +24,10 @@ dependencies {
     // org.spigotmc:spigot-api, which declares the same Gradle capability as folia-api and makes
     // resolution fail. We only need their own classes to compile against.
     // Floodgate API for Bedrock player detection (SOFT at runtime - see plugin.yml)
-    compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT") { isTransitive = false }
+    compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT") { isTransitive = false }
 
     // SkinsRestorer API for skin support on cracked servers (SOFT)
-    compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.13") { isTransitive = false }
+    compileOnly("net.skinsrestorer:skinsrestorer-api:15.12.5") { isTransitive = false }
 
     // NOTE: the EssentialsX compileOnly dependency is gone on purpose. This plugin used to catch
     // net.ess3.api.events.TPARequestEvent to intercept incoming requests; the TPA flow is now
