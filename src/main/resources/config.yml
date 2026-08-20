@@ -1,29 +1,125 @@
-# TPA Forms Bridge v2 Configuration
-# This plugin bridges EssentialsX TPA requests to Bedrock forms via GeyserMenu
+# ===========================================================================================
+# TPA Forms Bridge v2 - self-contained TPA for Folia, Java + Bedrock
+# ===========================================================================================
+# This plugin implements /tpa, /tpahere, /tpaccept, /tpdeny, /tpcancel, /tpatoggle, /tpaignore
+# and /tpaqueue itself. It does NOT talk to Essentials. If another plugin also registers those
+# command names, disable them there (for EssentialsC: plugins/EssentialsC/commands.yml,
+# `enabled: false`), otherwise whichever plugin loads first wins the plain name.
 
-# Default settings for new players
+tpa:
+  # How long a request stays pending before it expires, in seconds.
+  request-timeout-seconds: 120
+
+  # Delay between accepting a request and the teleport actually happening, in seconds.
+  # 0 disables the warmup entirely (teleport is immediate).
+  # The countdown runs on the moving player's Folia ENTITY scheduler, so it keeps ticking
+  # correctly even if they walk into a different region or world while it runs.
+  warmup-seconds: 0
+
+  # Cancel the warmup if the moving player walks away.
+  warmup-cancel-on-move: true
+
+  # How far the player may drift before "move" counts, in blocks. Small values are twitchy
+  # because of client-side position jitter; 0.5 is a sane floor.
+  warmup-move-threshold: 0.5
+
+  # Cancel the warmup if the moving player takes damage.
+  warmup-cancel-on-damage: true
+
+  # Minimum seconds between two successful teleports by the same player.
+  # 0 disables. `tpaforms.bypass.cooldown` skips it.
+  cooldown-seconds: 0
+
+  # How often the expiry sweep runs, in ticks. Runs on the global region scheduler.
+  # 20 = once a second, which is the right order of magnitude - this is a map walk, not work.
+  expiry-check-ticks: 20
+
+  # Send Java players clickable [ACCEPT] / [DENY] buttons alongside the request message.
+  # Bedrock players always get the form + plain text instead: Bedrock clients handle click
+  # events inconsistently.
+  clickable-messages: true
+
+# Default settings for new players. Each player can change these with /tpatoggle, /tpaignore
+# or the Bedrock settings form.
 defaults:
-  # Auto-accept incoming TPA requests (not TPAHere requests)
-  # When enabled, TPA requests from other players are automatically accepted
+  # Auto-accept incoming /tpa requests (never /tpahere - that would move the player without asking)
   auto-accept-tpa: false
-  
-  # Enable forms delivery for TPA requests
-  # When enabled, incoming TPA requests show as a form popup
-  # When disabled, only chat messages are shown
+
+  # Show incoming requests to Bedrock players as a form popup as well as in chat
   forms-delivery: true
 
 # Skin provider for player avatars in forms
 # Options: "mc-heads", "crafatar", "minotar"
-# mc-heads.net is recommended for best compatibility
 skin-provider: "mc-heads"
 
-# Debug mode - enables verbose logging
+# Debug mode - logs every request creation with its id
 debug: false
 
-# Messages (supports color codes with & or §)
+# ===========================================================================================
+# Messages. Every user-facing string is here. Colour codes use &.
+# Placeholders: %player% %seconds% %count% %type% %usage%
+# Set a value to "" to suppress that message entirely.
+# ===========================================================================================
 messages:
-  tpa-sent: "&aSent teleport request to &b%player%&a."
-  tpa-here-sent: "&aSent teleport here request to &b%player%&a."
+  # --- outgoing ---
+  tpa-sent: "&aSent a teleport request to &b%player%&a. &7(expires in %seconds%s)"
+  tpa-here-sent: "&aAsked &b%player%&a to teleport to you. &7(expires in %seconds%s)"
+  tpa-cancelled: "&7Cancelled your teleport request to &b%player%&7."
+  tpa-cancelled-target: "&7&b%player%&7 cancelled their teleport request."
+  no-outgoing: "&cYou have no outgoing teleport requests."
+  already-requested: "&cYou already have a pending request to &b%player%&c."
+  self-request: "&cYou cannot send a teleport request to yourself."
+  player-not-found: "&cPlayer &b%player%&c is not online."
+  player-only: "&cThis command can only be used by a player."
+  no-permission: "&cYou do not have permission to do that."
+  usage: "&cUsage: &7%usage%"
+
+  # --- incoming ---
+  tpa-received: "&b%player% &fwants to teleport to you."
+  tpa-here-received: "&b%player% &fwants you to teleport to them."
+  tpa-received-hint: "&7Use &a/tpaccept %player% &7or &c/tpdeny %player%&7. Expires in %seconds%s."
+  accept-button: "&a&l[ACCEPT]"
+  deny-button: "&c&l[DENY]"
+  accept-hover: "&aAccept the request from %player%"
+  deny-hover: "&cDeny the request from %player%"
+
+  # --- resolution ---
+  accepted-by-target: "&aAccepted the teleport request from &b%player%&a."
+  accepted-by-requester: "&b%player% &aaccepted your teleport request."
+  denied-by-target: "&7Denied the teleport request from &b%player%&7."
+  denied-by-requester: "&b%player% &cdenied your teleport request."
+  no-pending: "&cYou have no pending teleport requests."
+  no-pending-from: "&cYou have no pending teleport request from &b%player%&c."
+  ambiguous-request: "&eYou have %count% pending requests. Use &7/tpaccept <player>&e or &7/tpaqueue&e."
+  expired-target: "&7The teleport request from &b%player%&7 expired."
+  expired-requester: "&7Your teleport request to &b%player%&7 expired."
   request-ignored: "&7Teleport request from &b%player%&7 was ignored."
-  settings-updated: "&aTPA Settings updated successfully."
+
+  # --- blocked ---
+  # Both of these are intentionally identical: telling a requester they are specifically on
+  # someone's ignore list turns a quiet mute into an argument.
+  target-toggled-off: "&b%player% &cis not accepting teleport requests."
+  target-ignores-you: "&b%player% &cis not accepting teleport requests."
+  toggle-on: "&aYou will now receive teleport requests."
+  toggle-off: "&cYou will no longer receive teleport requests."
+  ignore-added: "&cNow ignoring teleport requests from &b%player%&c."
+  ignore-removed: "&aNo longer ignoring teleport requests from &b%player%&a."
+
+  # --- queue ---
+  queue-header: "&bPending teleport requests (%count%):"
+  queue-entry: "&7 - &b%player% &7(%type%, %seconds%s left)"
+  queue-empty: "&7You have no pending teleport requests."
+  queue-outgoing-header: "&bYour outgoing requests (%count%):"
+
+  # --- teleport ---
+  warmup-start: "&eTeleporting in &b%seconds%&e seconds - do not move."
+  warmup-cancelled-move: "&cTeleport cancelled - you moved."
+  warmup-cancelled-damage: "&cTeleport cancelled - you took damage."
+  teleporting: "&aTeleporting..."
+  teleport-failed: "&cThe teleport failed. Please try again."
+  teleport-target-gone: "&cThe other player is no longer online."
+  cooldown: "&cYou must wait &b%seconds%&c more seconds before teleporting again."
+
+  # --- misc ---
+  settings-updated: "&aTPA settings updated successfully."
   no-players-online: "&7There are no other players online."
