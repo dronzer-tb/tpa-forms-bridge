@@ -1,5 +1,6 @@
 package com.geysermc.tpaforms.hook;
 
+import com.geysermc.tpaforms.util.Integrations;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.geysermc.floodgate.api.FloodgateApi;
@@ -8,67 +9,64 @@ import java.util.UUID;
 
 /**
  * Hook for Floodgate to detect Bedrock players.
+ *
+ * <p>Floodgate is a SOFT dependency: if the plugin/API is absent every query returns false and the
+ * plugin simply never treats anyone as a Bedrock player. All lookups here are UUID-based, which is
+ * important on Folia - it means we never have to touch a {@link Player}'s region-owned state to
+ * decide whether they are a Bedrock client, so this is safe to call from any thread.
  */
 public class FloodgateHook {
 
     private FloodgateApi floodgateApi;
-    private boolean available = false;
+    private volatile boolean available = false;
 
     public FloodgateHook() {
-        checkAvailability();
-    }
-
-    private void checkAvailability() {
+        if (!Integrations.FLOODGATE_API) {
+            Bukkit.getLogger().info("[TPAForms] Floodgate API not on the classpath.");
+            return;
+        }
         try {
-            if (Bukkit.getPluginManager().getPlugin("floodgate") != null) {
-                Class.forName("org.geysermc.floodgate.api.FloodgateApi");
-                floodgateApi = FloodgateApi.getInstance();
-                available = floodgateApi != null;
-                if (available) {
-                    Bukkit.getLogger().info("[TPAForms] Floodgate hooked successfully.");
-                }
+            floodgateApi = FloodgateApi.getInstance();
+            available = floodgateApi != null;
+            if (available) {
+                Bukkit.getLogger().info("[TPAForms] Floodgate hooked successfully.");
+            } else {
+                Bukkit.getLogger().warning("[TPAForms] Floodgate classes present but the API is not initialised.");
             }
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+        } catch (Throwable t) {
             available = false;
-            Bukkit.getLogger().warning("[TPAForms] Floodgate not found or not loaded.");
+            Bukkit.getLogger().warning("[TPAForms] Failed to hook Floodgate: " + t);
         }
     }
 
-    /**
-     * Check if Floodgate is available.
-     */
     public boolean isAvailable() {
         return available;
     }
 
-    /**
-     * Check if a player is from Bedrock Edition.
-     */
     public boolean isBedrockPlayer(Player player) {
-        if (!available || floodgateApi == null) {
-            return false;
-        }
-        return floodgateApi.isFloodgatePlayer(player.getUniqueId());
+        return player != null && isBedrockPlayer(player.getUniqueId());
     }
 
-    /**
-     * Check if a player UUID belongs to a Bedrock player.
-     */
     public boolean isBedrockPlayer(UUID uuid) {
-        if (!available || floodgateApi == null) {
+        if (!available || floodgateApi == null || uuid == null) {
             return false;
         }
-        return floodgateApi.isFloodgatePlayer(uuid);
+        try {
+            return floodgateApi.isFloodgatePlayer(uuid);
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
-    /**
-     * Get the XUID of a Bedrock player.
-     */
     public String getXuid(UUID uuid) {
         if (!available || floodgateApi == null) {
             return null;
         }
-        var floodgatePlayer = floodgateApi.getPlayer(uuid);
-        return floodgatePlayer != null ? floodgatePlayer.getXuid() : null;
+        try {
+            var floodgatePlayer = floodgateApi.getPlayer(uuid);
+            return floodgatePlayer != null ? floodgatePlayer.getXuid() : null;
+        } catch (Throwable t) {
+            return null;
+        }
     }
 }

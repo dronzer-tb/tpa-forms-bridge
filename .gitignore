@@ -18,3 +18,4 @@ Thumbs.db
 
 # Legacy
 _legacy/
+.gradlehome/

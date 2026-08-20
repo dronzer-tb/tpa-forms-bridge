@@ -1,26 +1,114 @@
 name: TPAFormsBridge
-version: 2.0.0
+version: 2.1.0-folia
 main: com.geysermc.tpaforms.TPAFormsPlugin
 api-version: '1.20'
-description: Spigot-side TPA Forms for Geyser/Bedrock users with GeyserMenu integration.
+description: Self-contained TPA system for Folia, with Bedrock forms via Geyser/Floodgate.
 author: Kasniya
 website: https://github.com/kasniya/tpa-forms-bridge-v2
 
-# Required dependencies
-depend:
-  - Essentials
-  - floodgate
-  - GeyserMenuCompanion
+# Folia: every scheduler call in this plugin uses the region/entity/async schedulers, and the only
+# teleport is Entity#teleportAsync issued from the teleporting player's own entity scheduler.
+folia-supported: true
 
-# Optional dependencies
+# All integrations are SOFT. Nothing here is a hard `depend:` - a missing plugin makes the matching
+# feature inert and is logged at enable time instead of aborting plugin load. In particular there is
+# no Essentials dependency of any kind any more: this plugin implements TPA itself.
 softdepend:
+  - floodgate
+  - Floodgate
+  - GeyserMenuCompanion
   - SkinsRestorer
 
-permissions:
-  tpaforms.use:
-    description: Allows usage of TPA forms menu
-    default: true
-  tpaforms.admin:
-    description: Admin permission for TPA Forms
-    default: op
+commands:
+  tpa:
+    description: Ask a player to let you teleport to them.
+    usage: /tpa <player>
+    permission: tpaforms.command.tpa
+  tpahere:
+    description: Ask a player to teleport to you.
+    usage: /tpahere <player>
+    permission: tpaforms.command.tpahere
+  tpaccept:
+    description: Accept a pending teleport request.
+    usage: /tpaccept [player]
+    permission: tpaforms.command.tpaccept
+    aliases: [tpyes]
+  tpdeny:
+    description: Deny a pending teleport request.
+    usage: /tpdeny [player]
+    permission: tpaforms.command.tpdeny
+    aliases: [tpno]
+  tpcancel:
+    description: Cancel a teleport request you sent.
+    usage: /tpcancel [player]
+    permission: tpaforms.command.tpcancel
+  tpatoggle:
+    description: Toggle whether you receive teleport requests.
+    usage: /tpatoggle
+    permission: tpaforms.command.tpatoggle
+  tpaignore:
+    description: Toggle ignoring teleport requests from a player.
+    usage: /tpaignore <player>
+    permission: tpaforms.command.tpaignore
+  tpaqueue:
+    description: List your pending teleport requests.
+    usage: /tpaqueue
+    permission: tpaforms.command.tpaqueue
 
+permissions:
+  # Deliberately in the tpaforms.* namespace: essentialsc.* belongs to the other plugin whose TPA
+  # commands are disabled in favour of these, and reusing its nodes would make permission grants
+  # ambiguous the moment either plugin changes.
+  tpaforms.use:
+    description: Allows use of the Bedrock TPA forms menu (the GeyserMenu button).
+    default: true
+  tpaforms.command.tpa:
+    description: Allows /tpa.
+    default: true
+  tpaforms.command.tpahere:
+    description: Allows /tpahere.
+    default: true
+  tpaforms.command.tpaccept:
+    description: Allows /tpaccept.
+    default: true
+  tpaforms.command.tpdeny:
+    description: Allows /tpdeny.
+    default: true
+  tpaforms.command.tpcancel:
+    description: Allows /tpcancel.
+    default: true
+  tpaforms.command.tpatoggle:
+    description: Allows /tpatoggle.
+    default: true
+  tpaforms.command.tpaignore:
+    description: Allows /tpaignore.
+    default: true
+  tpaforms.command.tpaqueue:
+    description: Allows /tpaqueue.
+    default: true
+  tpaforms.bypass.warmup:
+    description: Teleport immediately, skipping the configured warmup.
+    default: op
+  tpaforms.bypass.cooldown:
+    description: Skip the configured post-teleport cooldown.
+    default: op
+  tpaforms.command.*:
+    description: Grants every TPA command.
+    default: true
+    children:
+      tpaforms.command.tpa: true
+      tpaforms.command.tpahere: true
+      tpaforms.command.tpaccept: true
+      tpaforms.command.tpdeny: true
+      tpaforms.command.tpcancel: true
+      tpaforms.command.tpatoggle: true
+      tpaforms.command.tpaignore: true
+      tpaforms.command.tpaqueue: true
+  tpaforms.admin:
+    description: Everything, including the warmup/cooldown bypasses.
+    default: op
+    children:
+      tpaforms.use: true
+      tpaforms.command.*: true
+      tpaforms.bypass.warmup: true
+      tpaforms.bypass.cooldown: true
